@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Pagefind index assets are useful for search but no SEO value
+Disallow: /pagefind/
+
+Sitemap: https://olden-era-guide.vercel.app/sitemap-index.xml

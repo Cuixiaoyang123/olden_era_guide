@@ -16,11 +16,32 @@ const { Content } = await spell.render();
 const schoolNames: Record<string, string> = {
   fire: '火法', water: '水法', earth: '土法', air: '风法', light: '光明法术', dark: '暗影法术',
 };
+
+const canonical = new URL(`/spells/${spell.slug}/`, Astro.site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: `${spell.data.name} (${spell.data.nameEn}) - ${schoolNames[spell.data.school]} ${spell.data.level}级`,
+  description: `《英雄无敌：旧日纪元》${spell.data.name}的效果、消耗、使用场景与构筑搭配。${spell.data.effect}`,
+  image: new URL('/og-default.svg', Astro.site).href,
+  datePublished: spell.data.updatedAt,
+  dateModified: spell.data.updatedAt,
+  author: { '@type': 'Organization', name: '旧日典籍' },
+  publisher: {
+    '@type': 'Organization',
+    name: '旧日典籍',
+    logo: { '@type': 'ImageObject', url: new URL('/favicon.svg', Astro.site).href },
+  },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+};
 ---
 
 <BaseLayout
   title={`${spell.data.name} - ${schoolNames[spell.data.school]} ${spell.data.level}级`}
   description={`《英雄无敌：旧日纪元》${spell.data.name}的效果、消耗、使用场景与构筑搭配。`}
+  keywords={[spell.data.name, spell.data.nameEn, schoolNames[spell.data.school], `${spell.data.level}级法术`, '法术']}
+  jsonLd={jsonLd}
 >
   <article class="container spell-page">
     <header class="spell-header">

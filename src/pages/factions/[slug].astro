@@ -23,11 +23,32 @@ const units = allUnits
 // 该阵营的英雄
 const allHeroes = await getCollection('heroes');
 const heroes = allHeroes.filter(h => h.data.faction === faction.slug);
+
+const canonical = new URL(`/factions/${faction.slug}/`, Astro.site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: `${faction.data.name} (${faction.data.nameEn}) - 阵营详情`,
+  description: faction.data.summary,
+  image: new URL('/og-default.svg', Astro.site).href,
+  datePublished: faction.data.updatedAt,
+  dateModified: faction.data.updatedAt,
+  author: { '@type': 'Organization', name: '旧日典籍' },
+  publisher: {
+    '@type': 'Organization',
+    name: '旧日典籍',
+    logo: { '@type': 'ImageObject', url: new URL('/favicon.svg', Astro.site).href },
+  },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+};
 ---
 
 <BaseLayout
   title={faction.data.name}
   description={faction.data.summary}
+  keywords={[faction.data.name, faction.data.nameEn, '阵营', ...faction.data.playstyle]}
+  jsonLd={jsonLd}
 >
   <section class="page-hero" style={`--page-accent: ${faction.data.accentColor};`}>
     <div class="container">

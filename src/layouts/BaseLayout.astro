@@ -7,12 +7,37 @@ interface Props {
   title: string;
   description?: string;
   ogImage?: string;
+  type?: 'website' | 'article';
+  publishedAt?: string;
+  updatedAt?: string;
+  author?: string;
+  section?: string;
+  keywords?: string[];
+  jsonLd?: object | object[];
+  noindex?: boolean;
 }
 
-const { title, description = '英雄无敌：旧日纪元 中文攻略站 —— 阵营、兵种、英雄、法术、流派、战役全数据。', ogImage } = Astro.props;
-const fullTitle = title ? `${title} — 旧日典籍` : '旧日典籍 · 英雄无敌：旧日纪元中文攻略站';
+const {
+  title,
+  description = '英雄无敌：旧日纪元 中文攻略站 —— 阵营、兵种、英雄、法术、流派、战役全数据。',
+  ogImage,
+  type = 'website',
+  publishedAt,
+  updatedAt,
+  author,
+  section,
+  keywords,
+  jsonLd,
+  noindex = false,
+} = Astro.props;
+
+const SITE_NAME = '旧日典籍';
+const fullTitle = title ? `${title} — ${SITE_NAME}` : `${SITE_NAME} · 英雄无敌：旧日纪元中文攻略站`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImageUrl = new URL(ogImage ?? '/og-default.svg', Astro.site).href;
+
+// JSON-LD serialization (safe: structured data only)
+const jsonLdItems = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
 ---
 
 <!doctype html>
@@ -21,26 +46,53 @@ const ogImageUrl = new URL(ogImage ?? '/og-default.svg', Astro.site).href;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#15110b" />
 
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    {keywords && keywords.length > 0 && <meta name="keywords" content={keywords.join(', ')} />}
     <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:locale" content="zh_CN" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={fullTitle} />
+
+    {/* Article-specific OG meta */}
+    {type === 'article' && publishedAt && <meta property="article:published_time" content={publishedAt} />}
+    {type === 'article' && updatedAt && <meta property="article:modified_time" content={updatedAt} />}
+    {type === 'article' && author && <meta property="article:author" content={author} />}
+    {type === 'article' && section && <meta property="article:section" content={section} />}
+    {type === 'article' && keywords && keywords.map(k => <meta property="article:tag" content={k} />)}
+
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={fullTitle} />
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- 预连接字体 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Sitemap discovery hint for crawlers -->
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+
+    <!-- RSS hint (placeholder for future feed) -->
+    {/* <link rel="alternate" type="application/rss+xml" title={SITE_NAME} href="/rss.xml" /> */}
+
+    {/* Structured Data (JSON-LD) */}
+    {jsonLdItems.map(item => (
+      <script type="application/ld+json" is:inline set:html={JSON.stringify(item)} />
+    ))}
   </head>
   <body>
     <Header />

@@ -12,11 +12,38 @@ export async function getStaticPaths() {
 
 const { guide } = Astro.props;
 const { Content } = await guide.render();
+const canonical = new URL(`/guides/${guide.slug}/`, Astro.site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: guide.data.title,
+  description: guide.data.description,
+  image: new URL('/og-default.svg', Astro.site).href,
+  datePublished: guide.data.publishedAt,
+  dateModified: guide.data.updatedAt,
+  author: { '@type': 'Person', name: guide.data.author },
+  publisher: {
+    '@type': 'Organization',
+    name: '旧日典籍',
+    logo: { '@type': 'ImageObject', url: new URL('/favicon.svg', Astro.site).href },
+  },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+  articleSection: guide.data.category,
+  keywords: guide.data.tags.join(', '),
+};
 ---
 
 <BaseLayout
   title={guide.data.title}
   description={guide.data.description}
+  type="article"
+  publishedAt={guide.data.publishedAt}
+  updatedAt={guide.data.updatedAt}
+  author={guide.data.author}
+  section={guide.data.category}
+  keywords={guide.data.tags}
+  jsonLd={jsonLd}
 >
   <article class="container guide-page">
     <header class="guide-header">

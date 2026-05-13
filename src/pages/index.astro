@@ -1,18 +1,73 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FactionCard from '../components/FactionCard.astro';
+import { getCollection } from 'astro:content';
 
-const factions = [
-  { href: '/factions/temple/',     name: '神殿',   nameEn: 'Temple',     summary: '正义骑士的国度。坚甲长矛，秩序为剑——稳健直线推进，新手友好。', tier: 'A', accentColor: '#d9b66a', emblem: '✠' },
-  { href: '/factions/dungeon/',    name: '地牢',   nameEn: 'Dungeon',    summary: '黑暗法师的领地。法术压制配合高初动单位，多人对战的强势阵营。', tier: 'S', accentColor: '#7a4d8e', emblem: '◈' },
-  { href: '/factions/schism/',     name: '分裂派', nameEn: 'Schism',     summary: '异端集结之地。机动性极高，骚扰打法的代表，新手陷阱阵营。', tier: 'B', accentColor: '#b85c3a', emblem: '✦' },
-  { href: '/factions/grove/',      name: '林地',   nameEn: 'Grove',      summary: '德鲁伊与精灵的家园。远程火力丰富，但近战脆弱，依赖地形。', tier: 'A', accentColor: '#6fa05c', emblem: '❦' },
-  { href: '/factions/necropolis/', name: '亡灵',   nameEn: 'Necropolis', summary: '不死之主的疆域。靠数量与复活机制滚雪球，长线游戏王者。', tier: 'S', accentColor: '#7d8b9a', emblem: '☥' },
-  { href: '/factions/hive/',       name: '虫巢',   nameEn: 'Hive',       summary: '本作全新阵营。集群协同与孵化机制，玩法独特但平衡尚在调整。', tier: 'B', accentColor: '#c47a3a', emblem: '✺' },
-];
+// 从内容集合动态拉阵营（防止再次像 schism / grove 一样的死链漂移）
+const emblems: Record<string, string> = {
+  temple: '✠',
+  dungeon: '◈',
+  academy: '✦',
+  sylvan: '❦',
+  necropolis: '☥',
+  hive: '✺',
+};
+const factionOrder = ['temple', 'dungeon', 'academy', 'sylvan', 'necropolis', 'hive'];
+const allFactions = await getCollection('factions');
+const factions = factionOrder
+  .map(slug => allFactions.find(f => f.slug === slug))
+  .filter((f): f is NonNullable<typeof f> => Boolean(f))
+  .map(f => ({
+    href: `/factions/${f.slug}/`,
+    name: f.data.name,
+    nameEn: f.data.nameEn,
+    summary: f.data.summary,
+    tier: f.data.tier,
+    accentColor: f.data.accentColor,
+    emblem: emblems[f.slug] ?? '◆',
+  }));
+
+const siteUrl = Astro.site!.href.replace(/\/$/, '');
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: '旧日典籍',
+  alternateName: 'Codex Oldenicus',
+  url: siteUrl,
+  description: '《英雄无敌：旧日纪元》中文攻略站。六大阵营、全兵种数据、英雄技能、流派构筑、战役全流程。',
+  inLanguage: 'zh-CN',
+  publisher: {
+    '@type': 'Organization',
+    name: '旧日典籍',
+    logo: { '@type': 'ImageObject', url: `${siteUrl}/favicon.svg` },
+  },
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${siteUrl}/search/?q={search_term_string}`,
+    },
+    'query-input': 'required name=search_term_string',
+  },
+};
+
+const orgJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: '旧日典籍',
+  alternateName: 'Codex Oldenicus',
+  url: siteUrl,
+  logo: `${siteUrl}/og-default.svg`,
+  description: '《英雄无敌：旧日纪元》中文社区攻略与数据库',
+};
 ---
 
-<BaseLayout title="" description="《英雄无敌：旧日纪元》中文攻略站。六大阵营、全兵种数据、英雄技能、流派构筑、战役全流程。">
+<BaseLayout
+  title=""
+  description="《英雄无敌：旧日纪元》中文攻略站。六大阵营、全兵种数据、英雄技能、流派构筑、战役全流程。"
+  keywords={['英雄无敌', '旧日纪元', 'Heroes of Might and Magic', 'Olden Era', '攻略', '兵种', '英雄', '法术', 'Tier 榜', '阵营']}
+  jsonLd={[websiteJsonLd, orgJsonLd]}
+>
   <!-- Hero -->
   <section class="hero">
     <div class="hero-noise"></div>
@@ -111,10 +166,10 @@ const factions = [
           <span class="path-meta">10 分钟 · 机制详解</span>
         </a>
 
-        <a class="path-card" href="/guides/combat-basics/">
-          <h3>六边格战斗系统</h3>
-          <p>回到六边形战棋——位置、面向、行动顺序、主动技能的运作方式。</p>
-          <span class="path-meta">9 分钟 · 战斗机制</span>
+        <a class="path-card" href="/guides/dungeon-dragon-build/">
+          <h3>地牢飞龙流完全构筑</h3>
+          <p>开局到双龙阵决战。Week-by-Week 资源表、技能轮、律法路径、对线决策树。</p>
+          <span class="path-meta">15 分钟 · 进阶构筑</span>
         </a>
       </div>
     </div>

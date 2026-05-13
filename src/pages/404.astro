@@ -1,0 +1,171 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="404 - 此页不存在"
+  description="你访问的页面不在典籍之中。从这里返回，或者使用站内搜索查找你想要的内容。"
+  noindex={true}
+>
+  <section class="notfound">
+    <div class="container nf-inner">
+      <div class="nf-ornament">
+        <div class="ornament-line"></div>
+        <span class="ornament-mark">⚜</span>
+        <div class="ornament-line"></div>
+      </div>
+
+      <p class="nf-eyebrow">CHAPTER · 失落的卷轴</p>
+
+      <h1 class="nf-code">404</h1>
+
+      <p class="nf-title">此页不在典籍之中</p>
+
+      <p class="nf-lede">
+        你访问的路径已被时间湮没——也许从未存在，<br />
+        也许已在某次补丁中被重新铸造。
+      </p>
+
+      <form class="nf-search" action="/search/" method="get" role="search">
+        <input
+          type="search"
+          name="q"
+          placeholder="尝试用关键词搜索（兵种 / 英雄 / 法术…）"
+          aria-label="站内搜索"
+          autocomplete="off"
+        />
+      </form>
+
+      <div class="nf-links">
+        <a class="nf-link nf-link-primary" href="/">返回首页</a>
+        <a class="nf-link" href="/factions/">浏览六大阵营</a>
+        <a class="nf-link" href="/tier-list/">查看 Tier 榜</a>
+        <a class="nf-link" href="/guides/">阅读攻略</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound {
+    padding: var(--space-24) 0;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    background:
+      radial-gradient(ellipse at center, rgba(201, 162, 94, 0.06) 0%, transparent 60%);
+  }
+
+  .nf-inner {
+    text-align: center;
+    max-width: 720px;
+  }
+
+  .nf-ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
+  .ornament-line {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold-deep));
+  }
+  .ornament-line:last-child {
+    background: linear-gradient(to left, transparent, var(--gold-deep));
+  }
+  .ornament-mark { font-size: 1.5rem; color: var(--gold); }
+
+  .nf-eyebrow {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: var(--space-6);
+  }
+
+  .nf-code {
+    font-family: var(--font-display);
+    font-size: clamp(5rem, 16vw, 9rem);
+    font-weight: 700;
+    color: var(--gold-bright);
+    letter-spacing: 0.05em;
+    margin: 0;
+    line-height: 1;
+    text-shadow: 0 0 60px rgba(201, 162, 94, 0.25);
+  }
+
+  .nf-title {
+    font-family: var(--font-cn);
+    font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+    color: var(--ink-primary);
+    margin: var(--space-4) 0 var(--space-6);
+    letter-spacing: 0.1em;
+  }
+
+  .nf-lede {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--ink-secondary);
+    margin-bottom: var(--space-10);
+  }
+
+  .nf-search {
+    margin-bottom: var(--space-8);
+  }
+
+  .nf-search input {
+    width: 100%;
+    max-width: 480px;
+    padding: 10px 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(201, 162, 94, 0.3);
+    border-radius: var(--radius);
+    color: var(--ink-primary);
+    font-family: var(--font-cn);
+    font-size: 0.95rem;
+    transition: border-color 180ms ease;
+  }
+
+  .nf-search input:focus {
+    outline: none;
+    border-color: var(--gold);
+  }
+
+  .nf-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+  }
+
+  .nf-link {
+    padding: var(--space-2) var(--space-5);
+    font-family: var(--font-cn);
+    font-size: 0.9rem;
+    color: var(--ink-primary);
+    border: 1px solid var(--gold-deep);
+    border-radius: var(--radius);
+    transition: all 180ms ease;
+  }
+
+  .nf-link:hover {
+    border-color: var(--gold);
+    color: var(--gold-bright);
+    text-shadow: none;
+  }
+
+  .nf-link-primary {
+    background: var(--gold);
+    color: var(--bg-deep);
+    border-color: var(--gold);
+  }
+  .nf-link-primary:hover {
+    background: var(--gold-bright);
+    color: var(--bg-deep);
+  }
+</style>

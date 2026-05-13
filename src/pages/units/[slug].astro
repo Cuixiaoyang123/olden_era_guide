@@ -13,11 +13,36 @@ export async function getStaticPaths() {
 const { unit } = Astro.props;
 const { Content } = await unit.render();
 const s = unit.data.stats;
+const canonical = new URL(`/units/${unit.slug}/`, Astro.site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: `${unit.data.name} (${unit.data.nameEn}) - ${unit.data.faction} ${unit.data.tier}级兵`,
+  description: `《英雄无敌：旧日纪元》${unit.data.name}（${unit.data.nameEn}）的完整数据、能力、克制关系、使用攻略。`,
+  image: new URL('/og-default.svg', Astro.site).href,
+  datePublished: unit.data.updatedAt,
+  dateModified: unit.data.updatedAt,
+  author: { '@type': 'Organization', name: '旧日典籍' },
+  publisher: {
+    '@type': 'Organization',
+    name: '旧日典籍',
+    logo: { '@type': 'ImageObject', url: new URL('/favicon.svg', Astro.site).href },
+  },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+  about: {
+    '@type': 'Thing',
+    name: `${unit.data.name} (${unit.data.nameEn})`,
+    description: `Heroes of Might and Magic: Olden Era 中 ${unit.data.faction} 阵营的 ${unit.data.tier} 级${unit.data.upgraded ? '升级' : '基础'}兵种`,
+  },
+};
 ---
 
 <BaseLayout
   title={`${unit.data.name} - ${unit.data.faction} ${unit.data.tier}级兵`}
   description={`《英雄无敌：旧日纪元》${unit.data.name}（${unit.data.nameEn}）的完整数据、能力、克制关系、使用攻略。`}
+  keywords={[unit.data.name, unit.data.nameEn, `${unit.data.tier}级兵`, unit.data.faction, ...unit.data.abilities].slice(0, 10)}
+  jsonLd={jsonLd}
 >
   <article class="container unit-page">
     <header class="unit-header">

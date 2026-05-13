@@ -12,11 +12,37 @@ export async function getStaticPaths() {
 
 const { hero } = Astro.props;
 const { Content } = await hero.render();
+const canonical = new URL(`/heroes/${hero.slug}/`, Astro.site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: `${hero.data.name} (${hero.data.nameEn}) - ${hero.data.faction} ${hero.data.class}`,
+  description: `《英雄无敌：旧日纪元》${hero.data.name}（${hero.data.nameEn}）的专精、起始技能、推荐构筑。`,
+  image: new URL('/og-default.svg', Astro.site).href,
+  datePublished: hero.data.updatedAt,
+  dateModified: hero.data.updatedAt,
+  author: { '@type': 'Organization', name: '旧日典籍' },
+  publisher: {
+    '@type': 'Organization',
+    name: '旧日典籍',
+    logo: { '@type': 'ImageObject', url: new URL('/favicon.svg', Astro.site).href },
+  },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+  about: {
+    '@type': 'Person',
+    name: `${hero.data.name} (${hero.data.nameEn})`,
+    jobTitle: hero.data.class,
+    description: `${hero.data.faction} 阵营英雄，专精：${hero.data.specialty}`,
+  },
+};
 ---
 
 <BaseLayout
   title={`${hero.data.name} - 英雄构筑`}
   description={`《英雄无敌：旧日纪元》${hero.data.name}（${hero.data.nameEn}）的专精、起始技能、推荐构筑。`}
+  keywords={[hero.data.name, hero.data.nameEn, hero.data.faction, hero.data.class, hero.data.specialty, '英雄构筑']}
+  jsonLd={jsonLd}
 >
   <article class="container hero-page">
     <header class="hero-header">
