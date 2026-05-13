@@ -1,0 +1,154 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TierRow from '../../components/TierRow.astro';
+import { getCollection } from 'astro:content';
+
+// 从兵种集合中聚合 Tier List
+const units = await getCollection('units');
+const factions = await getCollection('factions');
+const factionNameMap = Object.fromEntries(factions.map(f => [f.slug, f.data.name]));
+
+function buildTier(rating: string) {
+  return units
+    .filter(u => u.data.rating === rating)
+    .map(u => ({
+      name: u.data.name,
+      faction: factionNameMap[u.data.faction] || u.data.faction,
+      href: `/units/${u.slug}/`,
+    }));
+}
+
+const tiers = [
+  { tier: 'S' as const, label: 'S 级 · 版本之主', description: '当前版本必选，无脑强势', entries: buildTier('S') },
+  { tier: 'A' as const, label: 'A 级 · 稳定核心', description: '主流构筑常驻，性价比极高', entries: buildTier('A') },
+  { tier: 'B' as const, label: 'B 级 · 情境强势', description: '特定场合或构筑下表现优秀', entries: buildTier('B') },
+  { tier: 'C' as const, label: 'C 级 · 中规中矩', description: '不影响大局，但也无亮点', entries: buildTier('C') },
+  { tier: 'D' as const, label: 'D 级 · 不推荐', description: '当前版本下表现挣扎', entries: buildTier('D') },
+];
+
+const factionTiers = factions
+  .map(f => ({
+    name: f.data.name,
+    nameEn: f.data.nameEn,
+    tier: f.data.tier,
+    slug: f.slug,
+    summary: f.data.summary,
+    accentColor: f.data.accentColor,
+  }))
+  .sort((a, b) => {
+    const order = { S: 0, A: 1, B: 2, C: 3, D: 4 } as Record<string, number>;
+    return (order[a.tier] ?? 99) - (order[b.tier] ?? 99);
+  });
+---
+
+<BaseLayout title="Tier 榜" description="《英雄无敌：旧日纪元》当前版本兵种 / 阵营强度榜。S 到 D 排序，每个补丁更新。">
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">CHAPTER III · 典籍档案</p>
+      <h1>Tier 榜</h1>
+      <p class="lede">当前版本 EA v0.1.x · 上次更新 2026.05.12</p>
+      <div class="hero-note">
+        <strong>说明：</strong>本榜单基于多人对战表现 + PVE 战役综合评定。EA 阶段每个大补丁后更新。
+      </div>
+    </div>
+  </section>
+
+  <section class="container content-section">
+    <h2 class="section-title">阵营强度</h2>
+    <div class="faction-tiers">
+      {factionTiers.map(f => (
+        <a class="faction-tier-row" href={`/factions/${f.slug}/`} style={`--card-accent: ${f.accentColor};`}>
+          <span class={`tier tier-${f.tier.toLowerCase()}`}>{f.tier}</span>
+          <div class="ft-info">
+            <h3>{f.name}</h3>
+            <span class="ft-en">{f.nameEn}</span>
+          </div>
+          <p class="ft-summary">{f.summary}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="container content-section">
+    <h2 class="section-title">兵种综合榜</h2>
+    {tiers.map(t => (
+      <TierRow tier={t.tier} label={t.label} description={t.description} entries={t.entries} />
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero { padding: var(--space-16) 0 var(--space-8); text-align: center; }
+  .page-hero h1 { margin: var(--space-3) 0; }
+  .lede { color: var(--ink-secondary); font-size: 1.05rem; margin-bottom: var(--space-6); }
+
+  .hero-note {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: var(--space-3) var(--space-5);
+    background: rgba(201, 162, 94, 0.06);
+    border-left: 3px solid var(--gold);
+    font-size: 0.9rem;
+    color: var(--ink-secondary);
+    text-align: left;
+  }
+  .hero-note strong { color: var(--gold-bright); font-family: var(--font-cn); }
+
+  .content-section { padding-block: var(--space-8); }
+
+  .section-title {
+    font-family: var(--font-cn);
+    font-size: 1.5rem;
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-3);
+    border-bottom: var(--border-soft);
+  }
+
+  .faction-tiers { display: grid; gap: var(--space-3); margin-bottom: var(--space-12); }
+
+  .faction-tier-row {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: var(--space-5);
+    align-items: center;
+    padding: var(--space-4) var(--space-5);
+    background: var(--bg-elevated);
+    border: var(--border-soft);
+    border-left: 4px solid var(--card-accent);
+    transition: all 200ms ease;
+    color: var(--ink-primary);
+    text-shadow: none;
+  }
+
+  .faction-tier-row:hover {
+    border-color: var(--card-accent);
+    transform: translateX(2px);
+    color: var(--ink-primary);
+  }
+
+  .ft-info h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    color: var(--card-accent);
+  }
+  .ft-en {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .ft-summary {
+    margin: 0;
+    color: var(--ink-secondary);
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 768px) {
+    .faction-tier-row {
+      grid-template-columns: auto 1fr;
+      grid-template-rows: auto auto;
+    }
+    .ft-summary { grid-column: span 2; }
+  }
+</style>

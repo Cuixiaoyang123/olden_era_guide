@@ -1,0 +1,321 @@
+/* ============================================
+   旧日纪元攻略站 - 设计系统
+   方向：现代化的中世纪典籍
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* ---- 色彩系统 ---- */
+  /* 深色羊皮纸基底 */
+  --bg-deep: #15110b;            /* 深夜羊皮纸 */
+  --bg-base: #1c1610;            /* 主背景 */
+  --bg-elevated: #251d14;        /* 卡片 */
+  --bg-overlay: #2d2418;         /* 弹层 / hover */
+
+  /* 羊皮纸暖色 - 文字 */
+  --ink-primary: #e8dcc4;        /* 主文字 - 米色 */
+  --ink-secondary: #b8a98a;      /* 次要文字 */
+  --ink-muted: #7a6d54;          /* 辅助文字 */
+  --ink-faint: #4a4032;          /* 极弱文字 */
+
+  /* 暗金色 - 强调 */
+  --gold: #c9a25e;
+  --gold-bright: #e0bc7a;
+  --gold-deep: #8b6f3a;
+
+  /* 血暗红 - 危险 / 高级 */
+  --crimson: #9a3a3a;
+  --crimson-bright: #c25555;
+
+  /* Tier 颜色 */
+  --tier-s: #d4b056;             /* 暗金 */
+  --tier-a: #b87a4c;             /* 红铜 */
+  --tier-b: #6a8a6a;             /* 苔绿 */
+  --tier-c: #6c7785;             /* 石灰 */
+  --tier-d: #5a4a4a;             /* 暗紫灰 */
+
+  /* 阵营色（默认通用） */
+  --accent: var(--gold);
+
+  /* ---- 字体 ---- */
+  --font-display: 'Cinzel', 'Noto Serif SC', serif;        /* 标题：罗马碑铭体 */
+  --font-body: 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif; /* 正文：加蒙德 */
+  --font-cn: 'Noto Serif SC', serif;                       /* 中文正文 */
+  --font-mono: 'JetBrains Mono', monospace;                /* 数据 */
+
+  /* ---- 节奏 ---- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  /* ---- 容器 ---- */
+  --max-w-prose: 68ch;
+  --max-w-content: 1200px;
+  --max-w-wide: 1400px;
+
+  /* ---- 圆角（克制） ---- */
+  --radius-sm: 2px;
+  --radius: 4px;
+  --radius-lg: 8px;
+
+  /* ---- 边框 ---- */
+  --border-faint: 1px solid rgba(201, 162, 94, 0.08);
+  --border-soft: 1px solid rgba(201, 162, 94, 0.18);
+  --border: 1px solid rgba(201, 162, 94, 0.32);
+}
+
+/* ============================================
+   重置 + 基础
+   ============================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 17px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-cn);
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--ink-primary);
+  background-color: var(--bg-base);
+  background-image:
+    radial-gradient(circle at 25% 15%, rgba(201, 162, 94, 0.04) 0%, transparent 45%),
+    radial-gradient(circle at 75% 85%, rgba(154, 58, 58, 0.03) 0%, transparent 45%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.78  0 0 0 0 0.64  0 0 0 0 0.37  0 0 0 0.025 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+  text-rendering: optimizeLegibility;
+}
+
+/* ============================================
+   排版
+   ============================================ */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--ink-primary);
+  letter-spacing: 0.02em;
+}
+
+h1 {
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+h2 {
+  font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+  letter-spacing: 0.04em;
+}
+
+h3 {
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+}
+
+h4 {
+  font-size: 1.125rem;
+}
+
+p {
+  margin-bottom: var(--space-4);
+}
+
+a {
+  color: var(--gold-bright);
+  text-decoration: none;
+  text-underline-offset: 4px;
+  transition: color 180ms ease, text-shadow 180ms ease;
+}
+
+a:hover {
+  color: var(--ink-primary);
+  text-shadow: 0 0 14px rgba(224, 188, 122, 0.4);
+}
+
+/* ============================================
+   通用元素
+   ============================================ */
+
+.container {
+  max-width: var(--max-w-content);
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+}
+
+.container-wide {
+  max-width: var(--max-w-wide);
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+}
+
+.prose {
+  max-width: var(--max-w-prose);
+  font-size: 1.0625rem;
+}
+
+.prose h2 {
+  margin-top: var(--space-12);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-soft);
+}
+
+.prose h3 {
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-3);
+  color: var(--gold-bright);
+}
+
+.prose ul, .prose ol {
+  margin-bottom: var(--space-4);
+  padding-left: var(--space-6);
+}
+
+.prose li {
+  margin-bottom: var(--space-2);
+}
+
+.prose blockquote {
+  margin: var(--space-6) 0;
+  padding: var(--space-4) var(--space-6);
+  border-left: 3px solid var(--gold);
+  background: rgba(201, 162, 94, 0.05);
+  font-style: italic;
+  color: var(--ink-secondary);
+}
+
+/* 章节装饰分隔线 */
+.divider-ornate {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin: var(--space-12) 0;
+  color: var(--gold-deep);
+}
+
+.divider-ornate::before,
+.divider-ornate::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold-deep), transparent);
+}
+
+.divider-ornate::after {
+  background: linear-gradient(to left, transparent, var(--gold-deep), transparent);
+}
+
+.divider-ornate span {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+/* 小标题装饰 - "凸版" 风 */
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: var(--space-3);
+}
+
+/* 数据徽章 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 2px var(--space-3);
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: var(--border-soft);
+  border-radius: var(--radius);
+  color: var(--ink-secondary);
+  background: rgba(201, 162, 94, 0.04);
+}
+
+/* Tier 标识 */
+.tier {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  border-radius: var(--radius);
+  color: var(--bg-deep);
+  letter-spacing: 0;
+}
+
+.tier-s { background: var(--tier-s); box-shadow: 0 0 18px rgba(212, 176, 86, 0.35); }
+.tier-a { background: var(--tier-a); }
+.tier-b { background: var(--tier-b); }
+.tier-c { background: var(--tier-c); }
+.tier-d { background: var(--tier-d); }
+
+/* ============================================
+   选区高亮
+   ============================================ */
+
+::selection {
+  background: rgba(201, 162, 94, 0.35);
+  color: var(--ink-primary);
+}
+
+/* ============================================
+   滚动条
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gold-deep);
+  border-radius: var(--radius);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+/* ============================================
+   响应式
+   ============================================ */
+
+@media (max-width: 768px) {
+  html { font-size: 16px; }
+  .container, .container-wide { padding-inline: var(--space-4); }
+}

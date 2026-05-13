@@ -1,0 +1,100 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container-wide footer-inner">
+    <div class="footer-col">
+      <h4>关于本站</h4>
+      <p>《英雄无敌：旧日纪元》中文社区攻略站。所有数据基于游戏抢先体验版，会随官方更新维护。</p>
+    </div>
+
+    <div class="footer-col">
+      <h4>快速导航</h4>
+      <ul>
+        <li><a href="/factions/">六大阵营</a></li>
+        <li><a href="/tier-list/">兵种 Tier 榜</a></li>
+        <li><a href="/guides/h3-veteran/">H3 老粉上手</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>声明</h4>
+      <p>《英雄无敌：旧日纪元》及相关美术资源版权归 Unfrozen Studio、Hooded Horse、Ubisoft 所有。本站为非官方爱好者社区站点。</p>
+    </div>
+  </div>
+
+  <div class="container-wide footer-meta">
+    <span>© {year} 旧日典籍</span>
+    <span class="footer-flourish">⚜</span>
+    <span>Codex Oldenicus</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-24);
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-8);
+    border-top: var(--border-soft);
+    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.25));
+  }
+
+  .footer-inner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-12);
+    margin-bottom: var(--space-12);
+  }
+
+  .footer-col h4 {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: var(--space-4);
+  }
+
+  .footer-col p {
+    color: var(--ink-muted);
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+
+  .footer-col ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .footer-col li {
+    margin-bottom: var(--space-2);
+    font-size: 0.95rem;
+  }
+
+  .footer-col a {
+    color: var(--ink-secondary);
+  }
+
+  .footer-col a:hover {
+    color: var(--gold-bright);
+  }
+
+  .footer-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    padding-top: var(--space-6);
+    border-top: var(--border-faint);
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--ink-faint);
+  }
+
+  .footer-flourish {
+    color: var(--gold-deep);
+    font-size: 1rem;
+  }
+</style>

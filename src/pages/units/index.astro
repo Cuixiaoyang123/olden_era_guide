@@ -1,0 +1,53 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import UnitCard from '../../components/UnitCard.astro';
+
+const units = await getCollection('units');
+units.sort((a, b) => {
+  if (a.data.faction !== b.data.faction) return a.data.faction.localeCompare(b.data.faction);
+  return a.data.tier - b.data.tier;
+});
+---
+
+<BaseLayout title="兵种百科" description="《英雄无敌：旧日纪元》全兵种数据：六大阵营，1-7 级，每个兵种完整属性、克制、能力。">
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">CHAPTER III · 典籍档案</p>
+      <h1>兵种百科</h1>
+      <p class="lede">六大阵营 · 1–7 级 · 完整属性 / 能力 / 克制关系</p>
+    </div>
+  </section>
+
+  <section class="container content-section">
+    <div class="unit-grid">
+      {units.map(u => (
+        <UnitCard
+          href={`/units/${u.slug}/`}
+          name={u.data.name}
+          nameEn={u.data.nameEn}
+          tier={u.data.tier}
+          faction={u.data.faction}
+          rating={u.data.rating}
+          stats={u.data.stats}
+          abilities={u.data.abilities}
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: var(--space-16) 0 var(--space-8);
+    text-align: center;
+  }
+  .page-hero h1 { margin: var(--space-3) 0; }
+  .lede { color: var(--ink-secondary); font-size: 1.05rem; }
+  .content-section { padding-bottom: var(--space-16); }
+  .unit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-4);
+  }
+</style>

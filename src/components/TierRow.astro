@@ -1,0 +1,138 @@
+---
+interface TierEntry {
+  name: string;
+  faction: string;
+  href: string;
+}
+
+interface Props {
+  tier: 'S' | 'A' | 'B' | 'C' | 'D';
+  label: string;
+  description: string;
+  entries: TierEntry[];
+}
+
+const { tier, label, description, entries } = Astro.props;
+---
+
+<div class={`tier-row tier-row-${tier.toLowerCase()}`}>
+  <div class="tier-label">
+    <span class={`tier tier-${tier.toLowerCase()}`}>{tier}</span>
+    <div class="tier-text">
+      <div class="tier-title">{label}</div>
+      <div class="tier-desc">{description}</div>
+    </div>
+  </div>
+
+  <div class="tier-entries">
+    {entries.map(e => (
+      <a class="tier-chip" href={e.href}>
+        <span class="chip-name">{e.name}</span>
+        <span class="chip-faction">{e.faction}</span>
+      </a>
+    ))}
+    {entries.length === 0 && (
+      <span class="tier-empty">暂无</span>
+    )}
+  </div>
+</div>
+
+<style>
+  .tier-row {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: var(--space-6);
+    padding: var(--space-5);
+    background: var(--bg-elevated);
+    border: var(--border-soft);
+    border-left-width: 4px;
+    margin-bottom: var(--space-3);
+    transition: background 200ms ease;
+  }
+
+  .tier-row-s { border-left-color: var(--tier-s); }
+  .tier-row-a { border-left-color: var(--tier-a); }
+  .tier-row-b { border-left-color: var(--tier-b); }
+  .tier-row-c { border-left-color: var(--tier-c); }
+  .tier-row-d { border-left-color: var(--tier-d); }
+
+  .tier-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .tier-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tier-title {
+    font-family: var(--font-cn);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink-primary);
+    letter-spacing: 0.08em;
+  }
+
+  .tier-desc {
+    font-size: 0.78rem;
+    color: var(--ink-muted);
+    margin-top: 2px;
+  }
+
+  .tier-entries {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: center;
+  }
+
+  .tier-chip {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-2) var(--space-3);
+    background: rgba(0, 0, 0, 0.22);
+    border: var(--border-faint);
+    border-radius: var(--radius-sm);
+    transition: all 180ms ease;
+    color: var(--ink-primary);
+    text-shadow: none;
+    min-width: 100px;
+  }
+
+  .tier-chip:hover {
+    border-color: var(--gold);
+    background: rgba(201, 162, 94, 0.08);
+    transform: translateY(-1px);
+  }
+
+  .chip-name {
+    font-family: var(--font-cn);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--ink-primary);
+  }
+
+  .chip-faction {
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .tier-empty {
+    font-style: italic;
+    color: var(--ink-faint);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 768px) {
+    .tier-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+    }
+  }
+</style>

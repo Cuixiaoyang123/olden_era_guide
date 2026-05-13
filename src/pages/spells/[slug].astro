@@ -1,0 +1,132 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const spells = await getCollection('spells');
+  return spells.map(s => ({
+    params: { slug: s.slug },
+    props: { spell: s },
+  }));
+}
+
+const { spell } = Astro.props;
+const { Content } = await spell.render();
+
+const schoolNames: Record<string, string> = {
+  fire: '火法', water: '水法', earth: '土法', air: '风法', light: '光明法术', dark: '暗影法术',
+};
+---
+
+<BaseLayout
+  title={`${spell.data.name} - ${schoolNames[spell.data.school]} ${spell.data.level}级`}
+  description={`《英雄无敌：旧日纪元》${spell.data.name}的效果、消耗、使用场景与构筑搭配。`}
+>
+  <article class="container spell-page">
+    <header class="spell-header">
+      <p class="eyebrow">{schoolNames[spell.data.school]} · 第 {spell.data.level} 级法术</p>
+      <div class="title-row">
+        <div>
+          <h1>{spell.data.name}</h1>
+          <p class="name-en">{spell.data.nameEn}</p>
+        </div>
+        <span class={`tier tier-${spell.data.rating.toLowerCase()}`}>{spell.data.rating}</span>
+      </div>
+    </header>
+
+    <section class="effect-block">
+      <div>
+        <h3>效果</h3>
+        <p>{spell.data.effect}</p>
+      </div>
+      <div class="mana-cost">
+        <span class="mana-num">{spell.data.manaCost}</span>
+        <span class="mana-label">法力</span>
+      </div>
+    </section>
+
+    <section class="prose">
+      <Content />
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .spell-page { padding-block: var(--space-12); max-width: 800px; }
+
+  .spell-header {
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-6);
+    border-bottom: var(--border-soft);
+  }
+
+  .title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-4);
+    margin-top: var(--space-3);
+  }
+
+  .title-row h1 { margin: 0; }
+
+  .name-en {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-top: var(--space-2);
+  }
+
+  .effect-block {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--space-6);
+    align-items: center;
+    padding: var(--space-5);
+    background: var(--bg-elevated);
+    border: var(--border-soft);
+    margin-bottom: var(--space-8);
+  }
+
+  .effect-block h3 {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: var(--space-3);
+  }
+
+  .effect-block p {
+    margin: 0;
+    color: var(--ink-secondary);
+    line-height: 1.6;
+  }
+
+  .mana-cost {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-3) var(--space-5);
+    background: rgba(90, 138, 168, 0.1);
+    border: 1px solid rgba(90, 138, 168, 0.3);
+    border-radius: var(--radius);
+  }
+
+  .mana-num {
+    font-family: var(--font-mono);
+    font-size: 2rem;
+    font-weight: 500;
+    color: #8ab2cc;
+    line-height: 1;
+  }
+
+  .mana-label {
+    font-family: var(--font-cn);
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+    margin-top: var(--space-1);
+  }
+</style>

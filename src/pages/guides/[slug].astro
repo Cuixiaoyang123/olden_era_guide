@@ -1,0 +1,109 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const guides = await getCollection('guides', g => !g.data.draft);
+  return guides.map(g => ({
+    params: { slug: g.slug },
+    props: { guide: g },
+  }));
+}
+
+const { guide } = Astro.props;
+const { Content } = await guide.render();
+---
+
+<BaseLayout
+  title={guide.data.title}
+  description={guide.data.description}
+>
+  <article class="container guide-page">
+    <header class="guide-header">
+      <p class="eyebrow">{guide.data.category}</p>
+      <h1>{guide.data.title}</h1>
+      <p class="description">{guide.data.description}</p>
+
+      <div class="meta-bar">
+        <span class="meta-author">作者：{guide.data.author}</span>
+        <span class="dot">·</span>
+        <span class="meta-date">发布于 {guide.data.publishedAt}</span>
+        {guide.data.updatedAt !== guide.data.publishedAt && (
+          <>
+            <span class="dot">·</span>
+            <span class="meta-date">更新于 {guide.data.updatedAt}</span>
+          </>
+        )}
+      </div>
+
+      {guide.data.tags.length > 0 && (
+        <div class="tags">
+          {guide.data.tags.map(t => <span class="tag">#{t}</span>)}
+        </div>
+      )}
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .guide-page {
+    padding-block: var(--space-12);
+    max-width: 760px;
+  }
+
+  .guide-header {
+    margin-bottom: var(--space-12);
+    padding-bottom: var(--space-8);
+    border-bottom: var(--border-soft);
+    text-align: center;
+  }
+
+  .guide-header h1 {
+    margin: var(--space-4) 0 var(--space-6);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  .description {
+    font-family: var(--font-body);
+    font-size: 1.2rem;
+    line-height: 1.7;
+    color: var(--ink-secondary);
+    margin-bottom: var(--space-6);
+  }
+
+  .meta-bar {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    margin-bottom: var(--space-4);
+  }
+
+  .dot { color: var(--ink-faint); }
+
+  .tags {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .tag {
+    font-size: 0.85rem;
+    color: var(--gold);
+    font-family: var(--font-mono);
+  }
+
+  .prose {
+    margin: 0 auto;
+  }
+</style>

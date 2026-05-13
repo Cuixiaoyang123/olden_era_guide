@@ -1,0 +1,148 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const spells = await getCollection('spells');
+spells.sort((a, b) => {
+  if (a.data.level !== b.data.level) return a.data.level - b.data.level;
+  return a.data.name.localeCompare(b.data.name);
+});
+
+const schoolNames: Record<string, string> = {
+  fire: '火',
+  water: '水',
+  earth: '土',
+  air: '风',
+  light: '光',
+  dark: '暗',
+};
+---
+
+<BaseLayout title="法术百科" description="《英雄无敌：旧日纪元》全法术：六大学派、五个等级、法力消耗与使用场景。">
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">CHAPTER III · 典籍档案</p>
+      <h1>法术百科</h1>
+      <p class="lede">六大学派 · 五个等级 · 完整效果与法力数据</p>
+    </div>
+  </section>
+
+  <section class="container content-section">
+    <div class="spell-grid">
+      {spells.map(s => (
+        <a class="spell-card" href={`/spells/${s.slug}/`}>
+          <div class="spell-head">
+            <span class={`spell-school school-${s.data.school}`}>{schoolNames[s.data.school]}</span>
+            <span class="spell-level">Lv {s.data.level}</span>
+            <span class={`tier tier-${s.data.rating.toLowerCase()}`}>{s.data.rating}</span>
+          </div>
+          <h3>{s.data.name}</h3>
+          <p class="spell-en">{s.data.nameEn}</p>
+          <p class="spell-effect">{s.data.effect}</p>
+          <div class="spell-cost"><span>{s.data.manaCost}</span> 法力</div>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero { padding: var(--space-16) 0 var(--space-8); text-align: center; }
+  .page-hero h1 { margin: var(--space-3) 0; }
+  .lede { color: var(--ink-secondary); font-size: 1.05rem; }
+  .content-section { padding-bottom: var(--space-16); }
+
+  .spell-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-4);
+  }
+
+  .spell-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-5);
+    background: var(--bg-elevated);
+    border: var(--border-soft);
+    transition: all 200ms ease;
+    color: var(--ink-primary);
+    text-shadow: none;
+  }
+
+  .spell-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+    color: var(--ink-primary);
+  }
+
+  .spell-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+  }
+
+  .spell-school {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    font-family: var(--font-cn);
+    font-weight: 700;
+    color: var(--bg-deep);
+    border-radius: var(--radius-sm);
+  }
+
+  .school-fire { background: #c2553a; }
+  .school-water { background: #5a8aa8; }
+  .school-earth { background: #8a7548; }
+  .school-air { background: #b8b078; }
+  .school-light { background: #d4b056; }
+  .school-dark { background: #5a4866; color: var(--ink-primary); }
+
+  .spell-level {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    margin-right: auto;
+  }
+
+  .spell-card h3 {
+    font-family: var(--font-cn);
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  .spell-en {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin: 0;
+  }
+
+  .spell-effect {
+    font-size: 0.9rem;
+    color: var(--ink-secondary);
+    margin: var(--space-2) 0;
+    line-height: 1.6;
+  }
+
+  .spell-cost {
+    margin-top: auto;
+    padding-top: var(--space-2);
+    border-top: var(--border-faint);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--ink-muted);
+  }
+
+  .spell-cost span {
+    color: var(--gold-bright);
+    font-size: 1rem;
+  }
+</style>

@@ -1,0 +1,239 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const units = await getCollection('units');
+  return units.map(u => ({
+    params: { slug: u.slug },
+    props: { unit: u },
+  }));
+}
+
+const { unit } = Astro.props;
+const { Content } = await unit.render();
+const s = unit.data.stats;
+---
+
+<BaseLayout
+  title={`${unit.data.name} - ${unit.data.faction} ${unit.data.tier}级兵`}
+  description={`《英雄无敌：旧日纪元》${unit.data.name}（${unit.data.nameEn}）的完整数据、能力、克制关系、使用攻略。`}
+>
+  <article class="container unit-page">
+    <header class="unit-header">
+      <p class="eyebrow">Lv {unit.data.tier} · {unit.data.faction.toUpperCase()}</p>
+      <div class="title-row">
+        <div>
+          <h1>{unit.data.name}</h1>
+          <p class="name-en">{unit.data.nameEn}</p>
+        </div>
+        <span class={`tier tier-${unit.data.rating.toLowerCase()}`}>{unit.data.rating}</span>
+      </div>
+    </header>
+
+    <section class="stats-block">
+      <div class="stat-cell">
+        <span class="stat-label">攻击</span>
+        <span class="stat-num">{s.attack}</span>
+      </div>
+      <div class="stat-cell">
+        <span class="stat-label">防御</span>
+        <span class="stat-num">{s.defense}</span>
+      </div>
+      <div class="stat-cell">
+        <span class="stat-label">伤害</span>
+        <span class="stat-num">{s.damageMin}–{s.damageMax}</span>
+      </div>
+      <div class="stat-cell">
+        <span class="stat-label">生命</span>
+        <span class="stat-num">{s.hp}</span>
+      </div>
+      <div class="stat-cell">
+        <span class="stat-label">速度</span>
+        <span class="stat-num">{s.speed}</span>
+      </div>
+      {s.initiative && (
+        <div class="stat-cell">
+          <span class="stat-label">初动</span>
+          <span class="stat-num">{s.initiative}</span>
+        </div>
+      )}
+      {s.shots !== undefined && (
+        <div class="stat-cell">
+          <span class="stat-label">射击</span>
+          <span class="stat-num">{s.shots}</span>
+        </div>
+      )}
+      <div class="stat-cell stat-cell-gold">
+        <span class="stat-label">招募</span>
+        <span class="stat-num">{s.cost}</span>
+      </div>
+      <div class="stat-cell">
+        <span class="stat-label">周长</span>
+        <span class="stat-num">+{s.growth}</span>
+      </div>
+    </section>
+
+    {unit.data.abilities.length > 0 && (
+      <section class="meta-block">
+        <h3>能力</h3>
+        <div class="ability-list">
+          {unit.data.abilities.map(a => <span class="ability">{a}</span>)}
+        </div>
+      </section>
+    )}
+
+    {(unit.data.counters.length > 0 || unit.data.counteredBy.length > 0) && (
+      <section class="counter-block">
+        {unit.data.counters.length > 0 && (
+          <div>
+            <h3>克制</h3>
+            <div class="counter-list">{unit.data.counters.map(c => <span class="counter counter-good">{c}</span>)}</div>
+          </div>
+        )}
+        {unit.data.counteredBy.length > 0 && (
+          <div>
+            <h3>被克制</h3>
+            <div class="counter-list">{unit.data.counteredBy.map(c => <span class="counter counter-bad">{c}</span>)}</div>
+          </div>
+        )}
+      </section>
+    )}
+
+    <section class="prose unit-content">
+      <Content />
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .unit-page {
+    padding-block: var(--space-12);
+    max-width: 900px;
+  }
+
+  .unit-header {
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-6);
+    border-bottom: var(--border-soft);
+  }
+
+  .title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-4);
+    margin-top: var(--space-3);
+  }
+
+  .title-row h1 { margin: 0; }
+
+  .name-en {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-top: var(--space-2);
+  }
+
+  .stats-block {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: var(--space-3);
+    padding: var(--space-5);
+    background: var(--bg-elevated);
+    border: var(--border-soft);
+    margin-bottom: var(--space-8);
+  }
+
+  .stat-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: var(--space-3) var(--space-2);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-sm);
+  }
+
+  .stat-cell-gold {
+    background: rgba(201, 162, 94, 0.08);
+    border: 1px solid rgba(201, 162, 94, 0.2);
+  }
+
+  .stat-cell-gold .stat-num {
+    color: var(--gold-bright);
+  }
+
+  .stat-label {
+    font-family: var(--font-cn);
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+  }
+
+  .stat-num {
+    font-family: var(--font-mono);
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--ink-primary);
+  }
+
+  .meta-block, .counter-block {
+    margin-bottom: var(--space-6);
+  }
+
+  .meta-block h3, .counter-block h3 {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: var(--space-3);
+  }
+
+  .ability-list, .counter-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .ability {
+    padding: var(--space-2) var(--space-3);
+    background: rgba(201, 162, 94, 0.08);
+    border: 1px solid rgba(201, 162, 94, 0.2);
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+  }
+
+  .counter-block {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .counter {
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    border: 1px solid;
+  }
+
+  .counter-good {
+    color: #8fb87a;
+    border-color: rgba(143, 184, 122, 0.3);
+    background: rgba(143, 184, 122, 0.06);
+  }
+
+  .counter-bad {
+    color: #c87a7a;
+    border-color: rgba(200, 122, 122, 0.3);
+    background: rgba(200, 122, 122, 0.06);
+  }
+
+  .unit-content {
+    margin-top: var(--space-8);
+    padding-top: var(--space-8);
+    border-top: var(--border-soft);
+  }
+</style>

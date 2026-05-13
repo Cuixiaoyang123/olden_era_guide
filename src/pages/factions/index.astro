@@ -1,0 +1,61 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FactionCard from '../../components/FactionCard.astro';
+
+const factions = await getCollection('factions');
+const emblems: Record<string, string> = {
+  temple: '✠',
+  dungeon: '◈',
+  schism: '✦',
+  grove: '❦',
+  necropolis: '☥',
+  hive: '✺',
+};
+---
+
+<BaseLayout title="阵营" description="《英雄无敌：旧日纪元》六大阵营总览：神殿、地牢、分裂派、林地、亡灵、虫巢。每个阵营的优劣、定位、推荐打法。">
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">CHAPTER I</p>
+      <h1>阵营之书</h1>
+      <p class="lede">六大阵营。每一个都是一种打法哲学。</p>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="faction-grid">
+      {factions.map(f => (
+        <FactionCard
+          href={`/factions/${f.slug}/`}
+          name={f.data.name}
+          nameEn={f.data.nameEn}
+          summary={f.data.summary}
+          tier={f.data.tier}
+          accentColor={f.data.accentColor}
+          emblem={emblems[f.slug] || '◈'}
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: var(--space-16) 0 var(--space-12);
+    text-align: center;
+  }
+  .page-hero h1 {
+    margin: var(--space-3) 0;
+  }
+  .lede {
+    color: var(--ink-secondary);
+    font-size: 1.1rem;
+  }
+  .faction-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+    gap: var(--space-5);
+    padding-bottom: var(--space-16);
+  }
+</style>

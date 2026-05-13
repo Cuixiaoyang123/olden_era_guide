@@ -1,0 +1,480 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FactionCard from '../components/FactionCard.astro';
+
+const factions = [
+  { href: '/factions/temple/',     name: '神殿',   nameEn: 'Temple',     summary: '正义骑士的国度。坚甲长矛，秩序为剑——稳健直线推进，新手友好。', tier: 'A', accentColor: '#d9b66a', emblem: '✠' },
+  { href: '/factions/dungeon/',    name: '地牢',   nameEn: 'Dungeon',    summary: '黑暗法师的领地。法术压制配合高初动单位，多人对战的强势阵营。', tier: 'S', accentColor: '#7a4d8e', emblem: '◈' },
+  { href: '/factions/schism/',     name: '分裂派', nameEn: 'Schism',     summary: '异端集结之地。机动性极高，骚扰打法的代表，新手陷阱阵营。', tier: 'B', accentColor: '#b85c3a', emblem: '✦' },
+  { href: '/factions/grove/',      name: '林地',   nameEn: 'Grove',      summary: '德鲁伊与精灵的家园。远程火力丰富，但近战脆弱，依赖地形。', tier: 'A', accentColor: '#6fa05c', emblem: '❦' },
+  { href: '/factions/necropolis/', name: '亡灵',   nameEn: 'Necropolis', summary: '不死之主的疆域。靠数量与复活机制滚雪球，长线游戏王者。', tier: 'S', accentColor: '#7d8b9a', emblem: '☥' },
+  { href: '/factions/hive/',       name: '虫巢',   nameEn: 'Hive',       summary: '本作全新阵营。集群协同与孵化机制，玩法独特但平衡尚在调整。', tier: 'B', accentColor: '#c47a3a', emblem: '✺' },
+];
+---
+
+<BaseLayout title="" description="《英雄无敌：旧日纪元》中文攻略站。六大阵营、全兵种数据、英雄技能、流派构筑、战役全流程。">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-noise"></div>
+    <div class="container hero-inner">
+      <div class="hero-ornament">
+        <div class="ornament-line"></div>
+        <span class="ornament-mark">⚜</span>
+        <div class="ornament-line"></div>
+      </div>
+
+      <p class="hero-eyebrow">Heroes of Might and Magic · Olden Era</p>
+
+      <h1 class="hero-title">
+        <span class="hero-title-line">旧日典籍</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        英雄无敌：旧日纪元 · 中文社区攻略与数据库
+      </p>
+
+      <p class="hero-lede">
+        十年沉寂，<em>Heroes</em> 归来。<br />
+        从神殿到虫巢，从初露锋芒的英雄到史诗终战，本站为<br class="hero-br" />
+        H3 老粉与新世代玩家提供最完整的中文典籍。
+      </p>
+
+      <div class="hero-cta">
+        <a href="/guides/h3-veteran/" class="btn-primary">
+          H3 老粉无痛上手
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+            <path d="M5 12h14m-4-4l4 4-4 4"/>
+          </svg>
+        </a>
+        <a href="/factions/" class="btn-secondary">浏览六大阵营</a>
+      </div>
+
+      <div class="hero-meta">
+        <span class="hero-meta-item">
+          <span class="meta-label">版本</span>
+          <span class="meta-value">EA · v0.1.x</span>
+        </span>
+        <span class="hero-meta-sep">·</span>
+        <span class="hero-meta-item">
+          <span class="meta-label">阵营</span>
+          <span class="meta-value">6</span>
+        </span>
+        <span class="hero-meta-sep">·</span>
+        <span class="hero-meta-item">
+          <span class="meta-label">数据更新</span>
+          <span class="meta-value">2026.05</span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Factions -->
+  <section class="section">
+    <div class="container">
+      <header class="section-header">
+        <p class="eyebrow">CHAPTER I · 阵营之书</p>
+        <h2>六大阵营</h2>
+        <p class="section-lede">本作回归经典 H3 阵容并新增"虫巢"——选择阵营是每局对局的第一个战略决策。</p>
+      </header>
+
+      <div class="faction-grid">
+        {factions.map(f => <FactionCard {...f} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- 入门指引 -->
+  <section class="section">
+    <div class="container">
+      <header class="section-header">
+        <p class="eyebrow">CHAPTER II · 入门之路</p>
+        <h2>从何开始</h2>
+      </header>
+
+      <div class="path-grid">
+        <a class="path-card path-card-featured" href="/guides/h3-veteran/">
+          <span class="path-tag">推荐</span>
+          <h3>H3 老粉无痛上手</h3>
+          <p>三代和五代之后，本作回到了哪里？继承了什么、改动了什么、抛弃了什么。一篇文章读懂。</p>
+          <span class="path-meta">12 分钟 · 机制对照</span>
+        </a>
+
+        <a class="path-card" href="/guides/first-week/">
+          <h3>第一周该做什么</h3>
+          <p>开局到第七天，建造顺序、英雄路线、初始战斗的标准答案。</p>
+          <span class="path-meta">8 分钟 · 新手教程</span>
+        </a>
+
+        <a class="path-card" href="/guides/laws-and-prosperity/">
+          <h3>律法与繁荣度系统</h3>
+          <p>本作最大新机制。如何用每日积累的繁荣度解锁律法，撬动整局节奏。</p>
+          <span class="path-meta">10 分钟 · 机制详解</span>
+        </a>
+
+        <a class="path-card" href="/guides/combat-basics/">
+          <h3>六边格战斗系统</h3>
+          <p>回到六边形战棋——位置、面向、行动顺序、主动技能的运作方式。</p>
+          <span class="path-meta">9 分钟 · 战斗机制</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 数据库入口 -->
+  <section class="section section-database">
+    <div class="container">
+      <header class="section-header">
+        <p class="eyebrow">CHAPTER III · 典籍档案</p>
+        <h2>数据库</h2>
+      </header>
+
+      <div class="db-grid">
+        <a class="db-card" href="/units/">
+          <span class="db-count">80+</span>
+          <h3>兵种百科</h3>
+          <p>全六阵营、1–7 级、基础与升级版本完整数据</p>
+        </a>
+        <a class="db-card" href="/heroes/">
+          <span class="db-count">36</span>
+          <h3>英雄百科</h3>
+          <p>每位英雄的专精、起始技能、推荐构筑</p>
+        </a>
+        <a class="db-card" href="/spells/">
+          <span class="db-count">90+</span>
+          <h3>法术百科</h3>
+          <p>六大法术学派 · 法术等级与使用场景</p>
+        </a>
+        <a class="db-card" href="/tier-list/">
+          <span class="db-count">★</span>
+          <h3>Tier 榜</h3>
+          <p>当前版本强度榜，每个补丁更新</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer flourish -->
+  <div class="container">
+    <div class="divider-ornate">
+      <span>Aere Perennius</span>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  /* ============== Hero ============== */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: var(--space-24) 0 var(--space-16);
+    background:
+      radial-gradient(ellipse at top, rgba(201, 162, 94, 0.10) 0%, transparent 55%),
+      radial-gradient(ellipse at bottom, rgba(154, 58, 58, 0.06) 0%, transparent 55%);
+  }
+
+  .hero-noise {
+    position: absolute;
+    inset: 0;
+    opacity: 0.4;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.78  0 0 0 0 0.64  0 0 0 0 0.37  0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n2)'/%3E%3C/svg%3E");
+  }
+
+  .hero-inner {
+    position: relative;
+    text-align: center;
+    max-width: 900px;
+  }
+
+  .hero-ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
+  .ornament-line {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold-deep));
+  }
+  .ornament-line:last-child {
+    background: linear-gradient(to left, transparent, var(--gold-deep));
+  }
+  .ornament-mark {
+    font-size: 1.5rem;
+    color: var(--gold);
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: var(--space-6);
+  }
+
+  .hero-title {
+    font-family: var(--font-cn);
+    font-size: clamp(3.5rem, 10vw, 6rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.15em;
+    margin-bottom: var(--space-6);
+    color: var(--ink-primary);
+    text-shadow: 0 0 60px rgba(201, 162, 94, 0.25);
+  }
+
+  .hero-subtitle {
+    font-family: var(--font-display);
+    font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+    letter-spacing: 0.18em;
+    color: var(--gold-bright);
+    margin-bottom: var(--space-8);
+    text-transform: uppercase;
+  }
+
+  .hero-lede {
+    font-family: var(--font-body);
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    line-height: 1.8;
+    color: var(--ink-secondary);
+    margin-bottom: var(--space-10);
+    font-style: normal;
+  }
+
+  .hero-lede em {
+    font-style: italic;
+    color: var(--gold-bright);
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: var(--space-4);
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: var(--space-12);
+  }
+
+  .btn-primary, .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-6);
+    font-family: var(--font-cn);
+    font-weight: 500;
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+    border-radius: var(--radius);
+    transition: all 220ms ease;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--bg-deep);
+    border: 1px solid var(--gold);
+  }
+  .btn-primary:hover {
+    background: var(--gold-bright);
+    color: var(--bg-deep);
+    text-shadow: none;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(201, 162, 94, 0.25);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink-primary);
+    border: 1px solid var(--gold-deep);
+  }
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    color: var(--gold-bright);
+    text-shadow: none;
+  }
+
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+  }
+
+  .hero-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .meta-label { color: var(--ink-faint); }
+  .meta-value { color: var(--ink-secondary); }
+  .hero-meta-sep { color: var(--ink-faint); }
+
+  /* ============== Sections ============== */
+  .section {
+    padding-block: var(--space-16);
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: var(--space-12);
+  }
+
+  .section-header h2 {
+    margin-bottom: var(--space-4);
+  }
+
+  .section-lede {
+    max-width: 560px;
+    margin: 0 auto;
+    color: var(--ink-secondary);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  /* ============== Faction Grid ============== */
+  .faction-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+    gap: var(--space-5);
+  }
+
+  /* ============== Path Grid ============== */
+  .path-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-4);
+  }
+
+  .path-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-6);
+    background: var(--bg-elevated);
+    border: var(--border-soft);
+    color: var(--ink-primary);
+    text-shadow: none;
+    transition: all 220ms ease;
+    overflow: hidden;
+  }
+
+  .path-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    color: var(--ink-primary);
+  }
+
+  .path-card-featured {
+    background: linear-gradient(135deg, rgba(201, 162, 94, 0.10), var(--bg-elevated));
+    border-color: var(--gold-deep);
+  }
+
+  .path-tag {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    padding: 2px var(--space-2);
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--bg-deep);
+    background: var(--gold);
+    text-transform: uppercase;
+    border-radius: var(--radius-sm);
+  }
+
+  .path-card h3 {
+    font-size: 1.15rem;
+    margin: 0;
+  }
+
+  .path-card p {
+    font-size: 0.92rem;
+    color: var(--ink-secondary);
+    line-height: 1.6;
+    margin: 0;
+    flex: 1;
+  }
+
+  .path-meta {
+    font-family: var(--font-display);
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-top: var(--space-2);
+  }
+
+  /* ============== DB Section ============== */
+  .section-database {
+    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.2), transparent);
+  }
+
+  .db-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-4);
+  }
+
+  .db-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-6);
+    background: var(--bg-elevated);
+    border: var(--border-soft);
+    text-align: center;
+    color: var(--ink-primary);
+    text-shadow: none;
+    transition: all 220ms ease;
+  }
+
+  .db-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-3px);
+    color: var(--ink-primary);
+  }
+
+  .db-count {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: var(--gold-bright);
+    line-height: 1;
+  }
+
+  .db-card h3 {
+    font-size: 1.05rem;
+    margin: var(--space-2) 0 0;
+  }
+
+  .db-card p {
+    font-size: 0.85rem;
+    color: var(--ink-muted);
+    margin: 0;
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .hero {
+      padding: var(--space-16) 0 var(--space-12);
+    }
+    .hero-br {
+      display: none;
+    }
+    .section {
+      padding-block: var(--space-12);
+    }
+  }
+</style>

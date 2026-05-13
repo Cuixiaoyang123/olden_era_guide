@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a140c"/>
+      <stop offset="100%" stop-color="#0e0a06"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#a37c3e"/>
+      <stop offset="50%" stop-color="#e6c177"/>
+      <stop offset="100%" stop-color="#a37c3e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- corner ornaments -->
+  <g stroke="#c9a25e" stroke-width="1.5" fill="none" opacity="0.55">
+    <path d="M 60 60 L 140 60 M 60 60 L 60 140"/>
+    <path d="M 1140 60 L 1060 60 M 1140 60 L 1140 140"/>
+    <path d="M 60 570 L 140 570 M 60 570 L 60 490"/>
+    <path d="M 1140 570 L 1060 570 M 1140 570 L 1140 490"/>
+  </g>
+
+  <!-- center mark -->
+  <text x="600" y="250" text-anchor="middle" fill="#c9a25e" font-family="serif" font-size="92">⚜</text>
+
+  <!-- Chinese title -->
+  <text x="600" y="370" text-anchor="middle" fill="url(#gold)" font-family="'PingFang SC', 'Noto Serif SC', serif" font-size="76" font-weight="600" letter-spacing="8">旧日典籍</text>
+
+  <!-- divider -->
+  <line x1="500" y1="410" x2="700" y2="410" stroke="#c9a25e" stroke-width="1" opacity="0.6"/>
+
+  <!-- English subtitle -->
+  <text x="600" y="455" text-anchor="middle" fill="#a08560" font-family="serif" font-size="22" letter-spacing="8">CODEX OLDENICUS</text>
+
+  <!-- tagline -->
+  <text x="600" y="520" text-anchor="middle" fill="#8a7a5e" font-family="'PingFang SC', sans-serif" font-size="24" letter-spacing="4">英雄无敌 · 旧日纪元 中文社区攻略站</text>
+</svg>

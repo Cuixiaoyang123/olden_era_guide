@@ -1,0 +1,146 @@
+---
+const navItems = [
+  { href: '/factions/', label: '阵营' },
+  { href: '/units/', label: '兵种' },
+  { href: '/heroes/', label: '英雄' },
+  { href: '/spells/', label: '法术' },
+  { href: '/tier-list/', label: 'Tier 榜' },
+  { href: '/guides/', label: '攻略' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="container-wide header-inner">
+    <a href="/" class="brand">
+      <span class="brand-mark">⚜</span>
+      <span class="brand-name">
+        <span class="brand-cn">旧日典籍</span>
+        <span class="brand-en">Codex Oldenicus</span>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="主导航">
+      {navItems.map(item => (
+        <a
+          href={item.href}
+          class:list={['nav-item', { active: currentPath.startsWith(item.href) }]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(12px);
+    background: rgba(21, 17, 11, 0.78);
+    border-bottom: var(--border-soft);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+    gap: var(--space-8);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--ink-primary);
+    flex-shrink: 0;
+  }
+
+  .brand:hover {
+    color: var(--gold-bright);
+    text-shadow: none;
+  }
+
+  .brand-mark {
+    font-size: 1.75rem;
+    color: var(--gold);
+    line-height: 1;
+    transform: translateY(-1px);
+  }
+
+  .brand-name {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+
+  .brand-cn {
+    font-family: var(--font-cn);
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: 0.12em;
+  }
+
+  .brand-en {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    letter-spacing: 0.28em;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .nav {
+    display: flex;
+    gap: var(--space-1);
+    flex-wrap: wrap;
+  }
+
+  .nav-item {
+    position: relative;
+    padding: var(--space-2) var(--space-4);
+    font-family: var(--font-cn);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--ink-secondary);
+    letter-spacing: 0.08em;
+    transition: color 180ms ease;
+  }
+
+  .nav-item:hover {
+    color: var(--gold-bright);
+    text-shadow: none;
+  }
+
+  .nav-item.active {
+    color: var(--gold-bright);
+  }
+
+  .nav-item.active::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  @media (max-width: 768px) {
+    .header-inner {
+      flex-direction: column;
+      height: auto;
+      padding-block: var(--space-4);
+      gap: var(--space-3);
+    }
+    .nav-item {
+      padding: var(--space-2) var(--space-3);
+      font-size: 0.85rem;
+    }
+  }
+</style>

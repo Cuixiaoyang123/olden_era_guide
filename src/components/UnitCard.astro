@@ -1,0 +1,215 @@
+---
+interface Stats {
+  attack: number;
+  defense: number;
+  damageMin: number;
+  damageMax: number;
+  hp: number;
+  speed: number;
+  initiative?: number;
+  shots?: number;
+  cost: number;
+  growth: number;
+}
+
+interface Props {
+  name: string;
+  nameEn: string;
+  tier: number;          // 1-7
+  faction: string;
+  rating: string;
+  stats: Stats;
+  abilities: string[];
+  href?: string;
+}
+
+const { name, nameEn, tier, faction, rating, stats, abilities, href } = Astro.props;
+const Tag = href ? 'a' : 'div';
+---
+
+<Tag class="unit-card" href={href}>
+  <div class="unit-head">
+    <div class="unit-titles">
+      <span class="unit-tier-badge">Lv {tier}</span>
+      <h3 class="unit-name">{name}</h3>
+      <span class="unit-name-en">{nameEn}</span>
+    </div>
+    <span class={`tier tier-${rating.toLowerCase()}`}>{rating}</span>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat">
+      <span class="stat-label">攻</span>
+      <span class="stat-val">{stats.attack}</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">防</span>
+      <span class="stat-val">{stats.defense}</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">伤</span>
+      <span class="stat-val">{stats.damageMin}–{stats.damageMax}</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">血</span>
+      <span class="stat-val">{stats.hp}</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">速</span>
+      <span class="stat-val">{stats.speed}</span>
+    </div>
+    {stats.shots !== undefined && (
+      <div class="stat">
+        <span class="stat-label">射</span>
+        <span class="stat-val">{stats.shots}</span>
+      </div>
+    )}
+  </div>
+
+  <div class="unit-meta">
+    <span class="unit-cost">{stats.cost} <span>金币</span></span>
+    <span class="unit-growth">+{stats.growth} <span>/周</span></span>
+  </div>
+
+  {abilities.length > 0 && (
+    <div class="unit-abilities">
+      {abilities.slice(0, 3).map(a => <span class="ability-pill">{a}</span>)}
+      {abilities.length > 3 && <span class="ability-pill ability-more">+{abilities.length - 3}</span>}
+    </div>
+  )}
+</Tag>
+
+<style>
+  .unit-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    background: var(--bg-elevated);
+    border: var(--border-soft);
+    border-radius: var(--radius);
+    color: var(--ink-primary);
+    transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+  }
+
+  a.unit-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    text-shadow: none;
+  }
+
+  .unit-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-bottom: var(--space-3);
+    border-bottom: var(--border-faint);
+  }
+
+  .unit-titles {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .unit-tier-badge {
+    display: inline-block;
+    width: fit-content;
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .unit-name {
+    font-family: var(--font-cn);
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    margin: 0;
+  }
+
+  .unit-name-en {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+  }
+
+  /* 数据栅格 */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: var(--space-2);
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-2);
+    background: rgba(0, 0, 0, 0.18);
+    border-radius: var(--radius-sm);
+  }
+
+  .stat-label {
+    font-family: var(--font-cn);
+    font-size: 0.7rem;
+    color: var(--ink-muted);
+    margin-bottom: 2px;
+  }
+
+  .stat-val {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--ink-primary);
+  }
+
+  /* meta */
+  .unit-meta {
+    display: flex;
+    gap: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--ink-secondary);
+  }
+
+  .unit-meta span span {
+    font-family: var(--font-cn);
+    font-size: 0.78rem;
+    color: var(--ink-muted);
+    margin-left: 2px;
+  }
+
+  .unit-cost {
+    color: var(--gold-bright);
+  }
+
+  /* abilities */
+  .unit-abilities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .ability-pill {
+    padding: 2px var(--space-2);
+    font-family: var(--font-cn);
+    font-size: 0.72rem;
+    color: var(--ink-secondary);
+    background: rgba(201, 162, 94, 0.06);
+    border: 1px solid rgba(201, 162, 94, 0.14);
+    border-radius: var(--radius-sm);
+  }
+
+  .ability-more {
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+  }
+</style>

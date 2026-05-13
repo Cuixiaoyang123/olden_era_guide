@@ -1,0 +1,258 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import UnitCard from '../../components/UnitCard.astro';
+
+export async function getStaticPaths() {
+  const factions = await getCollection('factions');
+  return factions.map(f => ({
+    params: { slug: f.slug },
+    props: { faction: f },
+  }));
+}
+
+const { faction } = Astro.props;
+const { Content } = await faction.render();
+
+// 该阵营的兵种
+const allUnits = await getCollection('units');
+const units = allUnits
+  .filter(u => u.data.faction === faction.slug)
+  .sort((a, b) => a.data.tier - b.data.tier);
+
+// 该阵营的英雄
+const allHeroes = await getCollection('heroes');
+const heroes = allHeroes.filter(h => h.data.faction === faction.slug);
+---
+
+<BaseLayout
+  title={faction.data.name}
+  description={faction.data.summary}
+>
+  <section class="page-hero" style={`--page-accent: ${faction.data.accentColor};`}>
+    <div class="container">
+      <p class="eyebrow">CHAPTER I · 阵营之书</p>
+      <div class="title-row">
+        <div>
+          <h1>{faction.data.name}</h1>
+          <p class="name-en">{faction.data.nameEn}</p>
+        </div>
+        <span class={`tier tier-${faction.data.tier.toLowerCase()}`}>{faction.data.tier}</span>
+      </div>
+      <p class="summary">{faction.data.summary}</p>
+
+      <div class="quick-stats">
+        <div class="qs-block">
+          <h3>优势</h3>
+          <ul>
+            {faction.data.strengths.map(s => <li>{s}</li>)}
+          </ul>
+        </div>
+        <div class="qs-block">
+          <h3>劣势</h3>
+          <ul>
+            {faction.data.weaknesses.map(w => <li>{w}</li>)}
+          </ul>
+        </div>
+        <div class="qs-block">
+          <h3>打法标签</h3>
+          <div class="play-tags">
+            {faction.data.playstyle.map(p => <span class="play-tag">{p}</span>)}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container content-section">
+    <article class="prose">
+      <Content />
+    </article>
+  </section>
+
+  {units.length > 0 && (
+    <section class="container content-section">
+      <h2 class="section-title">兵种阵容</h2>
+      <div class="unit-grid">
+        {units.map(u => (
+          <UnitCard
+            href={`/units/${u.slug}/`}
+            name={u.data.name}
+            nameEn={u.data.nameEn}
+            tier={u.data.tier}
+            faction={u.data.faction}
+            rating={u.data.rating}
+            stats={u.data.stats}
+            abilities={u.data.abilities}
+          />
+        ))}
+      </div>
+    </section>
+  )}
+
+  {heroes.length > 0 && (
+    <section class="container content-section">
+      <h2 class="section-title">代表英雄</h2>
+      <div class="hero-list">
+        {heroes.map(h => (
+          <a class="hero-row" href={`/heroes/${h.slug}/`}>
+            <div>
+              <h3>{h.data.name}</h3>
+              <p class="hero-class">{h.data.class} · 专精：{h.data.specialty}</p>
+            </div>
+            <span class={`tier tier-${h.data.rating.toLowerCase()}`}>{h.data.rating}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: var(--space-12) 0 var(--space-8);
+    background:
+      radial-gradient(ellipse at top right, color-mix(in srgb, var(--page-accent) 14%, transparent), transparent 60%);
+    border-bottom: var(--border-faint);
+  }
+
+  .title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+
+  .title-row h1 {
+    margin: 0;
+    color: var(--page-accent);
+  }
+
+  .name-en {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-top: var(--space-2);
+  }
+
+  .summary {
+    font-family: var(--font-body);
+    font-size: 1.2rem;
+    line-height: 1.7;
+    color: var(--ink-secondary);
+    margin-bottom: var(--space-10);
+    max-width: 720px;
+  }
+
+  .quick-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-6);
+    padding: var(--space-6);
+    background: var(--bg-elevated);
+    border: var(--border-faint);
+    border-left: 3px solid var(--page-accent);
+  }
+
+  .qs-block h3 {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--page-accent);
+    margin-bottom: var(--space-3);
+  }
+
+  .qs-block ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .qs-block li {
+    font-size: 0.93rem;
+    color: var(--ink-secondary);
+    margin-bottom: var(--space-2);
+    padding-left: var(--space-4);
+    position: relative;
+  }
+
+  .qs-block li::before {
+    content: "◆";
+    position: absolute;
+    left: 0;
+    color: var(--page-accent);
+    font-size: 0.6rem;
+    top: 0.4rem;
+  }
+
+  .play-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .play-tag {
+    padding: 4px var(--space-3);
+    font-size: 0.82rem;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid color-mix(in srgb, var(--page-accent) 35%, transparent);
+    color: var(--ink-primary);
+    border-radius: var(--radius-sm);
+  }
+
+  /* sections */
+  .content-section {
+    padding-block: var(--space-12);
+  }
+
+  .section-title {
+    font-family: var(--font-cn);
+    font-size: 1.5rem;
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-3);
+    border-bottom: var(--border-soft);
+  }
+
+  .unit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-4);
+  }
+
+  .hero-list {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .hero-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4) var(--space-5);
+    background: var(--bg-elevated);
+    border: var(--border-faint);
+    transition: all 200ms ease;
+    color: var(--ink-primary);
+    text-shadow: none;
+  }
+
+  .hero-row:hover {
+    border-color: var(--page-accent);
+    color: var(--ink-primary);
+  }
+
+  .hero-row h3 {
+    margin: 0 0 4px;
+    font-size: 1.05rem;
+  }
+
+  .hero-class {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--ink-muted);
+  }
+</style>

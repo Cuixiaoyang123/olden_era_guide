@@ -1,0 +1,166 @@
+---
+interface Props {
+  href: string;
+  name: string;
+  nameEn: string;
+  summary: string;
+  tier: string;
+  accentColor?: string;
+  emblem?: string;  // 单字符纹章
+}
+
+const { href, name, nameEn, summary, tier, accentColor = '#c9a25e', emblem = '◈' } = Astro.props;
+---
+
+<a class="faction-card" href={href} style={`--card-accent: ${accentColor};`}>
+  <div class="card-corner card-corner-tl"></div>
+  <div class="card-corner card-corner-tr"></div>
+  <div class="card-corner card-corner-bl"></div>
+  <div class="card-corner card-corner-br"></div>
+
+  <div class="emblem">{emblem}</div>
+
+  <div class="card-body">
+    <div class="card-header">
+      <h3 class="card-name">{name}</h3>
+      <span class={`tier tier-${tier.toLowerCase()}`}>{tier}</span>
+    </div>
+    <div class="card-name-en">{nameEn}</div>
+    <p class="card-summary">{summary}</p>
+  </div>
+
+  <div class="card-cta">
+    <span>查阅典籍</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
+      <path d="M5 12h14m-4-4l4 4-4 4"/>
+    </svg>
+  </div>
+</a>
+
+<style>
+  .faction-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-8) var(--space-6) var(--space-6);
+    background: linear-gradient(155deg, var(--bg-elevated) 0%, var(--bg-base) 100%);
+    border: 1px solid rgba(201, 162, 94, 0.18);
+    color: var(--ink-primary);
+    text-shadow: none;
+    transition: transform 260ms ease, border-color 260ms ease, box-shadow 260ms ease;
+    overflow: hidden;
+    min-height: 280px;
+  }
+
+  .faction-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--card-accent) 16%, transparent), transparent 55%);
+    opacity: 0.5;
+    pointer-events: none;
+    transition: opacity 320ms ease;
+  }
+
+  .faction-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--card-accent);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      0 0 0 1px color-mix(in srgb, var(--card-accent) 25%, transparent);
+    color: var(--ink-primary);
+  }
+
+  .faction-card:hover::before {
+    opacity: 0.9;
+  }
+
+  .faction-card:hover .card-cta {
+    color: var(--card-accent);
+  }
+
+  /* 四角装饰 */
+  .card-corner {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--card-accent);
+    opacity: 0.55;
+  }
+  .card-corner-tl { top: 8px; left: 8px; border-right: none; border-bottom: none; }
+  .card-corner-tr { top: 8px; right: 8px; border-left: none; border-bottom: none; }
+  .card-corner-bl { bottom: 8px; left: 8px; border-right: none; border-top: none; }
+  .card-corner-br { bottom: 8px; right: 8px; border-left: none; border-top: none; }
+
+  .emblem {
+    position: absolute;
+    top: var(--space-6);
+    right: var(--space-6);
+    font-size: 2.5rem;
+    color: var(--card-accent);
+    opacity: 0.5;
+    line-height: 1;
+    font-family: var(--font-display);
+    transition: opacity 260ms ease, transform 260ms ease;
+  }
+
+  .faction-card:hover .emblem {
+    opacity: 0.9;
+    transform: scale(1.08) rotate(-4deg);
+  }
+
+  .card-body {
+    position: relative;
+    flex: 1;
+    margin-top: var(--space-2);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: 4px;
+  }
+
+  .card-name {
+    font-family: var(--font-cn);
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--ink-primary);
+    margin: 0;
+  }
+
+  .card-name-en {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--card-accent);
+    margin-bottom: var(--space-4);
+    opacity: 0.85;
+  }
+
+  .card-summary {
+    font-family: var(--font-cn);
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--ink-secondary);
+    margin-bottom: var(--space-4);
+  }
+
+  .card-cta {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    transition: color 260ms ease;
+    margin-top: auto;
+  }
+</style>

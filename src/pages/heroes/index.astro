@@ -1,0 +1,97 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const heroes = await getCollection('heroes');
+heroes.sort((a, b) => {
+  if (a.data.faction !== b.data.faction) return a.data.faction.localeCompare(b.data.faction);
+  return a.data.name.localeCompare(b.data.name);
+});
+---
+
+<BaseLayout title="英雄百科" description="《英雄无敌：旧日纪元》全英雄数据：每位英雄的专精、起始技能、起始法术、推荐构筑。">
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">CHAPTER III · 典籍档案</p>
+      <h1>英雄百科</h1>
+      <p class="lede">六大阵营 × 6 位英雄 · 完整专精与构筑指南</p>
+    </div>
+  </section>
+
+  <section class="container content-section">
+    <div class="hero-list">
+      {heroes.map(h => (
+        <a class="hero-row" href={`/heroes/${h.slug}/`}>
+          <div class="hero-info">
+            <h3>{h.data.name}</h3>
+            <p class="hero-meta">
+              <span class="hero-faction">{h.data.faction}</span>
+              <span class="dot">·</span>
+              <span>{h.data.class}</span>
+              <span class="dot">·</span>
+              <span class="hero-spec">专精：{h.data.specialty}</span>
+            </p>
+          </div>
+          <span class={`tier tier-${h.data.rating.toLowerCase()}`}>{h.data.rating}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: var(--space-16) 0 var(--space-8);
+    text-align: center;
+  }
+  .page-hero h1 { margin: var(--space-3) 0; }
+  .lede { color: var(--ink-secondary); font-size: 1.05rem; }
+  .content-section { padding-bottom: var(--space-16); }
+
+  .hero-list { display: grid; gap: var(--space-3); }
+
+  .hero-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-5);
+    background: var(--bg-elevated);
+    border: var(--border-soft);
+    transition: all 200ms ease;
+    color: var(--ink-primary);
+    text-shadow: none;
+  }
+
+  .hero-row:hover {
+    border-color: var(--gold);
+    transform: translateX(2px);
+    color: var(--ink-primary);
+  }
+
+  .hero-info h3 {
+    margin: 0 0 var(--space-2);
+    font-size: 1.15rem;
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: center;
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--ink-secondary);
+  }
+
+  .hero-faction {
+    color: var(--gold-bright);
+    text-transform: uppercase;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+  }
+
+  .dot { color: var(--ink-faint); }
+
+  .hero-spec { color: var(--ink-muted); }
+</style>

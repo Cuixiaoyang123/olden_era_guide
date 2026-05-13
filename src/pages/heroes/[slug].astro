@@ -1,0 +1,168 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const heroes = await getCollection('heroes');
+  return heroes.map(h => ({
+    params: { slug: h.slug },
+    props: { hero: h },
+  }));
+}
+
+const { hero } = Astro.props;
+const { Content } = await hero.render();
+---
+
+<BaseLayout
+  title={`${hero.data.name} - 英雄构筑`}
+  description={`《英雄无敌：旧日纪元》${hero.data.name}（${hero.data.nameEn}）的专精、起始技能、推荐构筑。`}
+>
+  <article class="container hero-page">
+    <header class="hero-header">
+      <p class="eyebrow">{hero.data.faction.toUpperCase()} · {hero.data.class}</p>
+      <div class="title-row">
+        <div>
+          <h1>{hero.data.name}</h1>
+          <p class="name-en">{hero.data.nameEn}</p>
+        </div>
+        <span class={`tier tier-${hero.data.rating.toLowerCase()}`}>{hero.data.rating}</span>
+      </div>
+      <p class="specialty">
+        <span class="spec-label">专精</span>
+        <span class="spec-value">{hero.data.specialty}</span>
+      </p>
+    </header>
+
+    <section class="info-grid">
+      <div class="info-block">
+        <h3>起始技能</h3>
+        <ul>{hero.data.startingSkills.map(s => <li>{s}</li>)}</ul>
+      </div>
+      {hero.data.startingSpells.length > 0 && (
+        <div class="info-block">
+          <h3>起始法术</h3>
+          <ul>{hero.data.startingSpells.map(s => <li>{s}</li>)}</ul>
+        </div>
+      )}
+      {hero.data.startingArmy.length > 0 && (
+        <div class="info-block">
+          <h3>初始军队</h3>
+          <ul>{hero.data.startingArmy.map(a => <li>{a}</li>)}</ul>
+        </div>
+      )}
+    </section>
+
+    {hero.data.recommendedBuild.length > 0 && (
+      <section class="build-block">
+        <h3>推荐技能轮</h3>
+        <ol>
+          {hero.data.recommendedBuild.map(b => <li>{b}</li>)}
+        </ol>
+      </section>
+    )}
+
+    <section class="prose hero-content">
+      <Content />
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .hero-page {
+    padding-block: var(--space-12);
+    max-width: 900px;
+  }
+
+  .hero-header {
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-6);
+    border-bottom: var(--border-soft);
+  }
+
+  .title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-4);
+    margin-top: var(--space-3);
+  }
+
+  .title-row h1 { margin: 0; }
+
+  .name-en {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-top: var(--space-2);
+  }
+
+  .specialty {
+    margin-top: var(--space-6);
+    padding: var(--space-3) var(--space-4);
+    background: linear-gradient(90deg, rgba(201, 162, 94, 0.12), transparent);
+    border-left: 3px solid var(--gold);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .spec-label {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .spec-value {
+    font-family: var(--font-cn);
+    font-size: 1.1rem;
+    color: var(--ink-primary);
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+  }
+
+  .info-block, .build-block {
+    padding: var(--space-5);
+    background: var(--bg-elevated);
+    border: var(--border-soft);
+  }
+
+  .info-block h3, .build-block h3 {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: var(--space-3);
+  }
+
+  .info-block ul, .build-block ol {
+    margin: 0;
+    padding-left: var(--space-5);
+  }
+
+  .info-block li, .build-block li {
+    color: var(--ink-secondary);
+    margin-bottom: var(--space-2);
+    font-size: 0.92rem;
+  }
+
+  .build-block {
+    margin-bottom: var(--space-8);
+  }
+
+  .hero-content {
+    margin-top: var(--space-8);
+    padding-top: var(--space-8);
+    border-top: var(--border-soft);
+  }
+</style>
