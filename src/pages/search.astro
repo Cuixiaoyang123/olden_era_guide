@@ -1,0 +1,125 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="搜索"
+  description="《英雄无敌：旧日纪元》中文攻略站全文检索 —— 兵种、英雄、法术、攻略一处搜全。"
+>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">CHAPTER · 典籍检索</p>
+      <h1>站内搜索</h1>
+      <p class="lede">兵种、英雄、法术、攻略 —— 中文全文检索，零后端。</p>
+    </div>
+  </section>
+
+  <section class="container search-section">
+    <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
+    <div id="search"></div>
+
+    <noscript>
+      <p class="js-required">站内搜索需要启用 JavaScript。如果你看到这条提示，说明浏览器禁用了 JS。</p>
+    </noscript>
+
+    <p class="dev-hint" id="dev-hint" hidden>
+      搜索索引仅在生产构建中可用。本地开发模式（<code>npm run dev</code>）下搜索不工作 ——
+      <code>npm run build && npm run preview</code> 后测试。
+    </p>
+  </section>
+
+  <!-- Pagefind UI is generated at build time into /pagefind/; is:inline keeps Vite from bundling -->
+  <script src="/pagefind/pagefind-ui.js" is:inline></script>
+
+  <script is:inline>
+    (function () {
+      function boot() {
+        if (typeof window.PagefindUI === 'undefined') {
+          var hint = document.getElementById('dev-hint');
+          if (hint) hint.hidden = false;
+          return;
+        }
+        var ui = new window.PagefindUI({
+          element: '#search',
+          showSubResults: true,
+          showImages: false,
+          pageSize: 10,
+          resetStyles: false,
+          translations: {
+            placeholder: '输入关键词（兵种名 / 英雄 / 法术 / 阵营 / 律法…）',
+            clear_search: '清除',
+            load_more: '加载更多',
+            search_label: '站内搜索',
+            filters_label: '筛选',
+            zero_results: '没有匹配 [SEARCH_TERM] 的内容',
+            many_results: '找到 [COUNT] 条匹配 [SEARCH_TERM] 的结果',
+            one_result: '找到 1 条匹配 [SEARCH_TERM] 的结果',
+            alt_search: '没有匹配 [SEARCH_TERM] 的内容，显示 [DIFFERENT_TERM] 的结果',
+            search_suggestion: '没有匹配 [SEARCH_TERM] 的内容。可以尝试：',
+            searching: '搜索中…',
+          },
+        });
+        var params = new URLSearchParams(window.location.search);
+        var q = params.get('q');
+        if (q) ui.triggerSearch(q);
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+      } else {
+        boot();
+      }
+    })();
+  </script>
+</BaseLayout>
+
+<style is:global>
+  /* Pagefind UI 主题覆盖：匹配站点暗金调 */
+  :root {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: var(--gold-bright);
+    --pagefind-ui-text: var(--ink-primary);
+    --pagefind-ui-background: var(--bg-elevated);
+    --pagefind-ui-border: rgba(201, 162, 94, 0.25);
+    --pagefind-ui-tag: rgba(201, 162, 94, 0.1);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 4px;
+    --pagefind-ui-image-border-radius: 4px;
+    --pagefind-ui-image-box-ratio: 3 / 2;
+    --pagefind-ui-font: var(--font-cn, system-ui);
+  }
+</style>
+
+<style>
+  .page-hero {
+    padding: var(--space-16) 0 var(--space-8);
+    text-align: center;
+  }
+  .page-hero h1 { margin: var(--space-3) 0; }
+  .lede {
+    color: var(--ink-secondary);
+    font-size: 1.05rem;
+    margin-bottom: var(--space-6);
+  }
+
+  .search-section {
+    padding-block: var(--space-8) var(--space-16);
+    min-height: 60vh;
+  }
+
+  .js-required, .dev-hint {
+    margin-top: var(--space-6);
+    padding: var(--space-4) var(--space-5);
+    background: rgba(201, 162, 94, 0.06);
+    border-left: 3px solid var(--gold);
+    color: var(--ink-secondary);
+    font-size: 0.9rem;
+  }
+
+  .dev-hint code {
+    font-family: var(--font-mono);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--gold-bright);
+  }
+</style>

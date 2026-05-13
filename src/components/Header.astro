@@ -31,6 +31,16 @@ const currentPath = Astro.url.pathname;
         </a>
       ))}
     </nav>
+
+    <form class="search-form" action="/search/" method="get" role="search">
+      <input
+        type="search"
+        name="q"
+        placeholder="搜索…"
+        aria-label="站内搜索"
+        autocomplete="off"
+      />
+    </form>
   </div>
 </header>
 
@@ -131,6 +141,32 @@ const currentPath = Astro.url.pathname;
     background: var(--gold);
   }
 
+  .search-form {
+    flex-shrink: 0;
+  }
+
+  .search-form input {
+    width: 180px;
+    padding: 6px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(201, 162, 94, 0.25);
+    border-radius: var(--radius-sm);
+    color: var(--ink-primary);
+    font-family: var(--font-cn);
+    font-size: 0.85rem;
+    transition: border-color 180ms ease, background 180ms ease;
+  }
+
+  .search-form input::placeholder {
+    color: var(--ink-muted);
+  }
+
+  .search-form input:focus {
+    outline: none;
+    border-color: var(--gold);
+    background: rgba(0, 0, 0, 0.45);
+  }
+
   @media (max-width: 768px) {
     .header-inner {
       flex-direction: column;
@@ -141,6 +177,10 @@ const currentPath = Astro.url.pathname;
     .nav-item {
       padding: var(--space-2) var(--space-3);
       font-size: 0.85rem;
+    }
+    .search-form input {
+      width: 100%;
+      min-width: 240px;
     }
   }
 </style>
